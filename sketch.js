@@ -7,6 +7,9 @@ var score;
 var obs1,obs2,obs3,obs4,obs5,obs6;
 var Tempodejogo;
 var gameoverimg,gameover,restartimg,restart;
+var sompulo;
+var somtristeza;
+var somvida;
 
 var grupodenuvens, grupodeobs;
 var jogando = 1;
@@ -29,6 +32,9 @@ function preload(){
   obs4 = loadImage("obstacle4.png");
   obs5 = loadImage("obstacle5.png");
   obs6 = loadImage("obstacle6.png");
+  sompulo = loadSound("jump.mp3");
+  somtristeza = loadSound("die.mp3");
+  somvida = loadSound("checkPoint.mp3");
 }
 
 function setup() {
@@ -89,10 +95,16 @@ text("Tempo De Jogatina:"+Tempodejogo,250,50);
 console.log("Estado do jogo atual:"+estadodojogo);
 
 if(estadodojogo === jogando){
-  ground.velocityX = -4;
+  ground.velocityX = -(4+Tempodejogo/100);
 
 //Aumenta o tempo de jogo de acordo com os frames do jogo
 Tempodejogo = Tempodejogo + Math.round(frameCount/60);
+
+if(Tempodejogo%100 ===0&& Tempodejogo>0){
+somvida.play();
+
+
+}
 
 //reinicia o solo
 if (ground.x < 0){
@@ -102,6 +114,7 @@ if (ground.x < 0){
  // pulando o trex ao pressionar a tecla de espaço
  if(keyDown("space")&& trex.y >= 150) {
   trex.velocityY = -10;
+  sompulo.play();
  }
   //sistema de gravidade
   trex.velocityY = trex.velocityY + 0.8;
@@ -117,6 +130,7 @@ if (ground.x < 0){
     trex.changeAnimation("tristeza",trex_triste);
     grupodeobs.setLifetimeEach(-1);
     grupodenuvens.setLifetimeEach(-1);
+    somtristeza.play();
   }
 
 }else if (estadodojogo === gameover){
@@ -124,6 +138,7 @@ if (ground.x < 0){
   grupodeobs.setVelocityXEach(0);
   grupodenuvens.setVelocityXEach(0);
   trex.velocityY = 0; 
+
 }
 
   //impedir que o trex caia
@@ -153,7 +168,7 @@ if(frameCount%60 ===0){
 function gerarobstaculos(){
   if(frameCount%60 ===0){
 var obstaculos = createSprite(600,165,10,40);
-obstaculos.velocityX =-6;
+obstaculos.velocityX =-(6+Tempodejogo/100);
 var numeroRan = Math.round(random (1,6));
 switch(numeroRan){
 case 1:
@@ -182,7 +197,7 @@ break
 
 default:break
 }
-obstaculos.scale =0.5;
+obstaculos.scale =0.45;
 
 grupodeobs.add(obstaculos);
 
